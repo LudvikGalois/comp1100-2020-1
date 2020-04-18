@@ -9,15 +9,32 @@ import Data.Fixed (mod')
 
 -- | Render all the parts of a Model to a CodeWorld picture.
 modelToPicture :: Model -> Picture
-modelToPicture (Model ss t c)
+modelToPicture (Model ss t c pLoc)
   = translated 0 8 toolText
   & translated 0 7 colourText
+  & (preview t c pLoc)
   & colourShapesToPicture ss
   & coordinatePlane
   where
     colourText = stringToText (show c)
     toolText = stringToText (toolToLabel t)
     stringToText = lettering . pack
+
+preview :: Tool -> ColourName -> Maybe Point -> Picture
+preview _ _ Nothing = mempty
+preview t c (Just p) = case shape of
+  Nothing -> mempty
+  Just s -> colored (translucent (colourNameToColour c)) (shapeToPicture s)
+  where
+    shape = case t of
+      LineTool (Just q) -> Just $ Line q p
+      PolygonTool [q] -> Just $ Line q p
+      PolygonTool ps@(_:_:_) -> Just $ Polygon (p:ps)
+      RectangleTool (Just q) -> Just $ Rectangle q p
+      CircleTool (Just q) -> Just $ Circle q p
+      EllipseTool (Just q) -> Just $ Ellipse q p
+      SectorTool (Just q) -> Just $ Sector q p
+      _ -> Nothing
 
 toolToLabel :: Tool -> String
 toolToLabel t = case t of

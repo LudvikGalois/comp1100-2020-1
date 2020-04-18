@@ -35,12 +35,12 @@ data ColourName
   | Violet
   deriving (Eq, Show)
 
-data Model = Model [ColourShape] Tool ColourName
+data Model = Model [ColourShape] Tool ColourName (Maybe Point)
   deriving (Show)
 
 -- | Starting Model for when CodeWorld first starts up.
 emptyModel :: Model
-emptyModel = Model [] (LineTool Nothing) Black
+emptyModel = Model [] (LineTool Nothing) Black Nothing
 
 -- | A mysterious image. Meow.
 mystery :: [ColourShape]
