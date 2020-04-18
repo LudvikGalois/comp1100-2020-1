@@ -49,7 +49,7 @@ handleEvent event m@(Model ss t c pLoc) =
       PenTool True ps -> Model ((c, Pen ps): ss) (PenTool False []) c pLoc
       _ -> m
     PointerMovement p -> case t of
-      (PenTool True ps) -> Model ss (PenTool True (p:ps)) c (Just p)
+      PenTool True ps -> Model ss (PenTool True (p:ps)) c (Just p)
       _ -> Model ss t c (Just p)
     _ -> m
 
