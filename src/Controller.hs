@@ -48,9 +48,9 @@ handleEvent event m@(Model ss t c pLoc) =
       SectorTool (Just q) -> Model ((c, Sector q p): ss) (SectorTool Nothing) c pLoc
       PenTool True ps -> Model ((c, Pen ps): ss) (PenTool False []) c pLoc
       _ -> m
-    PointerMovement p
-      | (PenTool True ps) <- t -> Model ss (PenTool True (p:ps)) c (Just p)
-      | otherwise -> Model ss t c (Just p)
+    PointerMovement p -> case t of
+      (PenTool True ps) -> Model ss (PenTool True (p:ps)) c (Just p)
+      _ -> Model ss t c (Just p)
     _ -> m
 
 nextColour :: ColourName -> ColourName
