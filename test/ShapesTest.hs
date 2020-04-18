@@ -29,6 +29,9 @@ toolLabelTests =
   , Test "SectorTool"
       (assertEqual (toolToLabel (SectorTool Nothing))
       "Sector... click-drag-release")
+  , Test "PenTool"
+      (assertEqual (toolToLabel (PenTool False []))
+      "Pen... click-drag-release")
   ]
 
 nextColourTests :: [Test]
@@ -56,8 +59,10 @@ nextToolTests =
       (assertEqual (nextTool (CircleTool Nothing)) (EllipseTool Nothing))
   , Test "Ellipse -> Sector"
       (assertEqual (nextTool (EllipseTool Nothing)) (SectorTool Nothing))
-  , Test "Sector -> Line"
-        (assertEqual (nextTool (SectorTool Nothing)) (LineTool Nothing))
+  , Test "Sector -> Pen"
+        (assertEqual (nextTool (SectorTool Nothing)) (PenTool False []))
+  , Test "Pen -> Line"
+        (assertEqual (nextTool (PenTool False [])) (LineTool Nothing))
   , Test "Line (in use) -> Line"
       (assertEqual (nextTool (LineTool (Just (1,1)))) (LineTool (Just (1,1))))
   , Test "Polygon (in use) -> Polygon"
@@ -70,6 +75,8 @@ nextToolTests =
       (assertEqual (nextTool (EllipseTool (Just (1,1)))) (EllipseTool (Just (1,1))))
   , Test "Sector (in use) -> Sector"
       (assertEqual (nextTool (SectorTool (Just (1,1)))) (SectorTool (Just (1,1))))
+  , Test "Pen (in use) -> Pen"
+      (assertEqual (nextTool (PenTool True [])) (PenTool True []))
   ]
 
 -- | A haskell program starts by running the computation defined by
