@@ -63,17 +63,14 @@ colourNameToColour c = case c of
   Blue -> blue
   Violet -> purple
 
-(.:) :: (b -> c) -> (a -> a -> b) -> a -> a -> c
-(.:) = ((.).(.))
-
 shapeToPicture :: Shape -> Picture
 shapeToPicture s = case s of
   Line p q -> polyline [p, q]
   Polygon ps -> solidPolygon ps
   Rectangle p q -> solidPolygon $ zip (map fst [p, p, q, q]) (map snd [p, q, q, p])
   Circle p q -> uncurry translated p $ solidCircle $ dist p q
-  Ellipse p q -> translated x y $ scaled w h $ solidCircle 1
-    where [(x, w), (y, h)] =
+  Ellipse p q -> translated x y $ scaled halfWidth halfHeight $ solidCircle 1
+    where [(x, halfWidth), (y, halfHeight)] =
             [ (halfDist + min start end, halfDist)
             | axis <- [fst, snd]
             , let (start, end) = (axis p, axis q)
@@ -84,4 +81,4 @@ shapeToPicture s = case s of
   Pen ps -> curve ps
 
 dist :: Point -> Point -> Double
-dist = vectorLength .: vectorDifference 
+dist p q = vectorLength (vectorDifference p q)
