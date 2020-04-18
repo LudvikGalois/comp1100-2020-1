@@ -68,7 +68,7 @@ shapeToPicture s = case s of
   Line p q -> polyline [p, q]
   Polygon ps -> solidPolygon ps
   Rectangle p q -> solidPolygon $ zip (map fst [p, p, q, q]) (map snd [p, q, q, p])
-  Circle p q -> uncurry translated p $ solidCircle $ dist p q
+  Circle p@(x,y) q -> translated x y $ solidCircle $ dist p q
   Ellipse p q -> translated x y $ scaled halfWidth halfHeight $ solidCircle 1
     where [(x, halfWidth), (y, halfHeight)] =
             [ (halfDist + min start end, halfDist)
@@ -76,7 +76,7 @@ shapeToPicture s = case s of
             , let (start, end) = (axis p, axis q)
             , let halfDist = abs (start - end) / 2
             ]
-  Sector p q -> uncurry translated p $ sector 0 theta (dist p q)
+  Sector p@(x,y) q -> translated x y $ sector 0 theta (dist p q)
     where theta = vectorDirection (q `vectorDifference` p) `mod'` (2*pi)
   Pen ps -> curve ps
 
