@@ -1,0 +1,7 @@
+.dir-locals.el
+dist/
+dist-newstyle/
+*.nix
+OLDRUBRIC.md
+.DS_Store
+
