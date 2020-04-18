@@ -38,6 +38,7 @@ handleEvent event m@(Model ss t c pLoc) =
       CircleTool Nothing -> Model ss (CircleTool (Just p)) c pLoc
       EllipseTool Nothing -> Model ss (EllipseTool (Just p)) c pLoc
       SectorTool Nothing -> Model ss (SectorTool (Just p)) c pLoc
+      PenTool False [] -> Model ss (PenTool True []) c pLoc
       _ -> m
     PointerRelease p -> case t of
       LineTool (Just q) -> Model ((c, Line q p): ss) (LineTool Nothing) c pLoc
@@ -45,8 +46,11 @@ handleEvent event m@(Model ss t c pLoc) =
       CircleTool (Just q) -> Model ((c, Circle q p): ss) (CircleTool Nothing) c pLoc
       EllipseTool (Just q) -> Model ((c, Ellipse q p): ss) (EllipseTool Nothing) c pLoc
       SectorTool (Just q) -> Model ((c, Sector q p): ss) (SectorTool Nothing) c pLoc
+      PenTool True ps -> Model ((c, Pen ps): ss) (PenTool False []) c pLoc
       _ -> m
-    PointerMovement p -> Model ss t c (Just p)
+    PointerMovement p
+      | (PenTool True ps) <- t -> Model ss (PenTool True (p:ps)) c (Just p)
+      | otherwise -> Model ss t c (Just p)
     _ -> m
 
 nextColour :: ColourName -> ColourName
@@ -66,6 +70,7 @@ nextTool t = case t of
   RectangleTool Nothing -> CircleTool Nothing
   CircleTool Nothing -> EllipseTool Nothing
   EllipseTool Nothing -> SectorTool Nothing
-  SectorTool Nothing -> LineTool Nothing
+  SectorTool Nothing -> PenTool False []
+  PenTool False [] -> LineTool Nothing
   _ -> t
 

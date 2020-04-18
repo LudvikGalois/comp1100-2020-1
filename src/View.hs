@@ -34,6 +34,7 @@ preview t c (Just p) = case shape of
       CircleTool (Just q) -> Just $ Circle q p
       EllipseTool (Just q) -> Just $ Ellipse q p
       SectorTool (Just q) -> Just $ Sector q p
+      PenTool True ps -> Just $ Pen ps
       _ -> Nothing
 
 toolToLabel :: Tool -> String
@@ -44,6 +45,7 @@ toolToLabel t = case t of
   CircleTool{} -> "Circle... click-drag-release"
   EllipseTool{} -> "Ellipse... click-drag-release"
   SectorTool{} -> "Sector... click-drag-release"
+  PenTool{} -> "Pen... click-drag-release"
 
 colourShapesToPicture :: [ColourShape] -> Picture
 colourShapesToPicture = mconcat . map colourShapeToPicture
@@ -79,6 +81,7 @@ shapeToPicture s = case s of
             ]
   Sector p q -> uncurry translated p $ sector 0 theta (dist p q)
     where theta = vectorDirection (q `vectorDifference` p) `mod'` (2*pi)
+  Pen ps -> curve ps
 
 dist :: Point -> Point -> Double
 dist = vectorLength .: vectorDifference 

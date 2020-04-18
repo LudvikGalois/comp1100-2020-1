@@ -11,6 +11,7 @@ data Shape
   | Circle Point Point -- ^ Centre point, then point on the circumference
   | Ellipse Point Point -- ^ Coordinates of the bounding box for the ellipse
   | Sector Point Point -- ^ Center point and point on the circumference
+  | Pen [Point] -- ^ Points the pen has passed through
   deriving (Show)
 
 type ColourShape = (ColourName, Shape)
@@ -23,6 +24,7 @@ data Tool
   | CircleTool (Maybe Point)
   | EllipseTool (Maybe Point)
   | SectorTool (Maybe Point)
+  | PenTool Bool [Point]
   deriving (Eq, Show)
 
 data ColourName
